@@ -1,0 +1,27 @@
+ln -fs /usr/share/zoneinfo/asia/kuala_lumpur/ etc/localtime
+sed -i 's/#AcceptEnv/AcceptEnv/g’ /etc/ssh/sshd_config
+ sed -i 's/AcceptEnv/#AcceptEnv/g’ /etc/ssh/sshd_config
+service ssh restart
+sudo apt-get update
+sudo apt-get -y -f install
+sudo apt-get -y upgrade
+
+sudo apt-get -y install dropbear
+
+sed -i 's/NO_START=1/NO_START=0/g' /etc/default/dropbear
+    sed -i 's/DROPBEAR_PORT=22/DROPBEAR_PORT=443/g’ /etc/default/dropbear
+    echo "/bin/false/" >> /etc/shells
+    service dropbear restart
+    service ssh restart
+
+sudo apt-get -y install squid
+
+mv /etc/squid/squid.conf /etc/squid/squid.conf.old
+   echo "http_port 8080" >> /etc/squid/squid.conf
+   echo "acl Only_hosts dst xxx.xxx.xx.xxx" >> /etc/squid/squid.conf
+   echo "http_access allow Only_hosts" >> /etc/squid/squid.conf
+   echo "http_access deny All" >> /etc/squid/squid.conf
+   service squid restart
+
+wget sourceforge.net/projects/webadmin/files/webmin/1.831/webmin_1.831_all.deb
+      sudo dpkg -i --force-depends webmin_1.831_all.deb
